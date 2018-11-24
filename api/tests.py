@@ -1,14 +1,50 @@
 from django.test import TestCase
 from django.db import IntegrityError
+from api.models import StudentCharacterRatingCriteria
 from api.models import Section
 from api.models import Batch
 from api.models import Subject
+from api.models import PossibleTeacherPosition
+
+
+class StudentCharacterRatingCriteriaTestCase(TestCase):
+    def setUp(self):
+        self.criterion_name = 'Criterion'
+        self.criterion = StudentCharacterRatingCriteria(
+                             name=self.criterion_name
+                         )
+
+    def test_can_create_a_criterion_properly(self):
+        preaddition_count = StudentCharacterRatingCriteria.objects.count()
+        self.criterion.save()
+
+        postaddition_count = StudentCharacterRatingCriteria.objects.count()
+
+        try:
+            new_criterion = StudentCharacterRatingCriteria.objects.get(
+                                name=self.criterion_name
+                            )
+        except StudentCharacterRatingCriteria.DoesNotExist:
+            self.fail('Exception occured. '
+                      + 'Unable to get a StudentCharacterRatingCriteria object '
+                      + 'with criterion name "{}".'.format(self.section_name))
+
+        self.assertNotEqual(preaddition_count, postaddition_count)
+        self.assertEqual(new_criterion.name, self.criterion_name)
+
+    def test_should_not_create_criterion_with_preexisting_name(self):
+        StudentCharacterRatingCriteria(name='Criterion 1').save()
+        self.assertRaises(IntegrityError,
+                          StudentCharacterRatingCriteria(
+                                name='Criterion 1').save)
 
 
 class SectionModelTestCase(TestCase):
     def setUp(self):
         self.section_name = 'Section'
-        self.section = Section(name=self.section_name, year_level=1)
+        self.section_year_level = 1
+        self.section = Section(name=self.section_name,
+                               year_level=self.section_year_level)
 
     def test_can_create_a_section_properly(self):
         preaddition_count = Section.objects.count()
@@ -24,7 +60,7 @@ class SectionModelTestCase(TestCase):
                       + '"{}".'.format(self.section_name))
         
         self.assertNotEqual(preaddition_count, postaddition_count)
-        self.assertEqual(new_section.year_level, 1)
+        self.assertEqual(new_section.year_level, self.section_year_level)
         # No need to check if the section name is correct because we won't get
         # any records from the Section table if the section name is different
         # from the section name of the record we want.
@@ -79,7 +115,7 @@ class SubjectModelTestCase(TestCase):
         except Subject.DoesNotExist:
             self.fail('Exception occured. '
                       + 'Unable to get a Subject object with name '
-                      + '"{}"'.format(self.self.subject_name))
+                      + '"{}".'.format(self.self.subject_name))
 
         self.assertNotEqual(preaddition_count, postaddition_count)
 
@@ -89,4 +125,29 @@ class SubjectModelTestCase(TestCase):
                           Subject(name='Subject', year_level=1).save)
 
 
+class PossibleTeacherPositionTestCase(TestCase):
+    def setUp(self):
+        self.position_name = 'Position'
+        self.possible_teacher_position = PossibleTeacherPosition(
+                                             name=self.position_name)
 
+    def test_can_create_a_possible_teacher_position(self):
+        preaddition_count = PossibleTeacherPosition.objects.count()
+        self.possible_teacher_position.save()
+
+        postaddition_count = PossibleTeacherPosition.objects.count()
+
+        try:
+            new_position = PossibleTeacherPosition.objects.get(
+                               name=self.position_name)
+        except PossibleTeacherPosition.DoesNotExist:
+            self.fail('Exception occured. '
+                      + 'Unable to get a PossibleTeacherPosition object with '
+                      + 'name "{}".'.format(self.self.position_name))
+
+        self.assertNotEqual(preaddition_count, postaddition_count)
+
+    def test_should_not_create_position_with_preexisting_name(self):
+        PossibleTeacherPosition(name='Position').save()
+        self.assertRaises(IntegrityError,
+                          PossibleTeacherPosition(name='Position').save)
