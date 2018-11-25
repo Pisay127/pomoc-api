@@ -12,6 +12,28 @@ class StudentCharacterRatingCriteria(Base):
                             blank=False,
                             unique=True)
 
+    def __str__(self):
+        return '<StudentCharacterRatingCriteria {}'.format(name)
+
+
+class StudentMonthlyRequiredDays(Base):
+    month = models.PositiveSmallIntegerField('Month',
+                                             null=False,
+                                             blank=False)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+    num_days = models.PositiveSmallIntegerField('Required Number of Days',
+                                                null=False,
+                                                blank=True)
+
+    def __str__(self):
+        return '<StudentMonthlyRequiredDays {} {}>'.format(month, school_year)
+
+
+    class Meta:
+        unique_together = (('month', 'school_year'),)
+
 
 class Section(Base):
     name = models.TextField('Name',
@@ -57,4 +79,3 @@ class PossibleTeacherPosition(Base):
 
     def __str__(self):
         return '<PossibleTeacherPosition {}'.format(name)
-

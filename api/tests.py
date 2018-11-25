@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.db import IntegrityError
 from api.models import StudentCharacterRatingCriteria
+from api.models import StudentMonthlyRequiredDays
 from api.models import Section
 from api.models import Batch
 from api.models import Subject
@@ -11,8 +12,7 @@ class StudentCharacterRatingCriteriaTestCase(TestCase):
     def setUp(self):
         self.criterion_name = 'Criterion'
         self.criterion = StudentCharacterRatingCriteria(
-                             name=self.criterion_name
-                         )
+                             name=self.criterion_name)
 
     def test_can_create_a_criterion_properly(self):
         preaddition_count = StudentCharacterRatingCriteria.objects.count()
@@ -37,6 +37,44 @@ class StudentCharacterRatingCriteriaTestCase(TestCase):
         self.assertRaises(IntegrityError,
                           StudentCharacterRatingCriteria(
                                 name='Criterion 1').save)
+
+
+class StudentMonthlyRequiredDaysTestCase(TestCase):
+    def setUp(self):
+        self.month = 1
+        self.school_year = '2018-2019'
+        self.num_days = 1
+        self.monthly_required_days = StudentMonthlyRequiredDays(
+                                         month=self.month,
+                                         school_year=self.school_year,
+                                         num_days=self.num_days)
+
+    def test_can_create_a_monthly_required_days_properly(self):
+        preaddition_count = StudentMonthlyRequiredDays.objects.count()
+        self.monthly_required_days.save()
+
+        postaddition_count = StudentMonthlyRequiredDays.objects.count()
+
+        try:
+            new_monthly_required_days = StudentMonthlyRequiredDays.objects.get(
+                                            month=self.month,
+                                            school_year=self.school_year)
+        except StudentMonthlyRequiredDays.DoesNotExist:
+            self.fail('Exception occured. '
+                      + 'Unable to get a StudentMonthlyRequiredDays object for '
+                      + '{} {}.'.format(self.month, self.school_year))
+
+        self.assertNotEqual(preaddition_count, postaddition_count)
+        self.assertEqual(new_monthly_required_days.num_days, self.num_days)
+
+    def test_should_not_create_a_nonunique_monthly_required_days(self):
+        StudentMonthlyRequiredDays(month=1,
+                                   school_year='2015-2016',
+                                   num_days=30).save()
+        self.assertRaises(IntegrityError,
+                          StudentMonthlyRequiredDays(month=1,
+                                                     school_year='2015-2016',
+                                                     num_days=30).save)
 
 
 class SectionModelTestCase(TestCase):
