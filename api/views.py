@@ -20,3 +20,8 @@ class CreateStudentCharacterRatingCriteriaView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+class StudentCharacterRatingCriteriaView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentCharacterRatingCriteria.objects.all()
+    serializer_class = StudentCharacterRatingCriteriaSerializer

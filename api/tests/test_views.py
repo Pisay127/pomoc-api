@@ -8,23 +8,111 @@ from api.models import Section
 from api.models import Batch
 from api.models import Subject
 from api.models import PossibleTeacherPosition
+from api.serializers import StudentCharacterRatingCriteriaSerializer
+from api.serializers import StudentMonthlyRequiredDaysSerializer
+from api.serializers import SectionSerializer
+from api.serializers import BatchSerializer
+from api.serializers import SubjectSerializer
+from api.serializers import PossibleTeacherPositionSerializer
 
 
 class StudentCharacterRatingCriteriaTestCase(TestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.data = {
+        payload = {
             'name': 'Some Criterion'
         }
-        self.create_response = self.client.post(reverse('create_student_'
-                                                        + 'character_rating'
-                                                        + '_criterion'),
-                                                self.data,
-                                                format='json')
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_student_'
+                                                 + 'character_rating'
+                                                 + '_criteria'),
+                                         payload,
+                                         format='json')
 
     def test_api_can_create_a_criterion(self):
-        self.assertEqual(self.create_response.status_code,
-                         status.HTTP_201_CREATED)
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_cannot_create_invalid_criterion(self):
+        payload = {
+            'name': ''
+        }
+        response = self.client.post(reverse('create_student_character_rating_'
+                                            + 'criteria'),
+                                    payload,
+                                    format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_get_a_criterion(self):
+        criterion = StudentCharacterRatingCriteria.objects.get()
+        response = self.client.get(reverse('student_character_rating_'
+                                           + 'criteria',
+                                            kwargs={
+                                                'pk': criterion.id
+                                            }),
+                                   format='json')
+        serialized_object = StudentCharacterRatingCriteriaSerializer(criterion)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_criterion(self):
+        response = self.client.get(reverse('student_character_rating_'
+                                           + 'criteria',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_criterion(self):
+        payload = {
+            'name': 'A New Criterion'
+        }
+        criterion = StudentCharacterRatingCriteria.objects.get()
+        response = self.client.put(reverse('student_character_rating_'
+                                           + 'criteria',
+                                           kwargs={
+                                              'pk': criterion.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_cannot_invalidly_update_a_criterion(self):
+        payload = {
+            'name': ''
+        }
+        criterion = StudentCharacterRatingCriteria.objects.get()
+        response = self.client.put(reverse('student_character_rating_'
+                                           + 'criteria',
+                                           kwargs={
+                                               'pk': criterion.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_delete_criterion(self):
+        criterion = StudentCharacterRatingCriteria.objects.get()
+        response = self.client.delete(reverse('student_character_rating_'
+                                              + 'criteria',
+                                              kwargs={
+                                                  'pk': criterion.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_criterion(self):
+        response = self.client.delete(reverse('student_character_rating_'
+                                              + 'criteria',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class StudentMonthlyRequiredDaysTestCase(TestCase):

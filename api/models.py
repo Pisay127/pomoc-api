@@ -13,7 +13,7 @@ class StudentCharacterRatingCriteria(Base):
                             unique=True)
 
     def __str__(self):
-        return '<StudentCharacterRatingCriteria {}'.format(name)
+        return '<StudentCharacterRatingCriteria {}>'.format(self.name)
 
 
 class StudentMonthlyRequiredDays(Base):
@@ -28,7 +28,8 @@ class StudentMonthlyRequiredDays(Base):
                                                 blank=True)
 
     def __str__(self):
-        return '<StudentMonthlyRequiredDays {} {}>'.format(month, school_year)
+        return '<StudentMonthlyRequiredDays {} {}>'.format(self.month,
+                                                           self.school_year)
 
 
     class Meta:
@@ -45,7 +46,7 @@ class Section(Base):
                                                   blank=False)
 
     def __str__(self):
-        return '<Section {} - {}>'.format(name, year_level)
+        return '<Section {} - {}>'.format(self.name, self.year_level)
 
 
 class Batch(Base):
@@ -55,7 +56,7 @@ class Batch(Base):
                                             unique=True)
 
     def __str__(self):
-        return '<Batch {}>'.format(year)
+        return '<Batch {}>'.format(self.year)
 
 
 class Subject(Base):
@@ -68,7 +69,7 @@ class Subject(Base):
                                                   blank=False)
 
     def __str__(self):
-        return '<Subject {} ({})>'.format(name, year_level)
+        return '<Subject {} ({})>'.format(self.name, self.year_level)
 
 
 class PossibleTeacherPosition(Base):
@@ -78,4 +79,4 @@ class PossibleTeacherPosition(Base):
                             unique=True)
 
     def __str__(self):
-        return '<PossibleTeacherPosition {}'.format(name)
+        return '<PossibleTeacherPosition {}'.format(self.name)
