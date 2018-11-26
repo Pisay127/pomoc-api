@@ -77,7 +77,7 @@ class StudentMonthlyRequiredDaysTestCase(TestCase):
                                                      num_days=30).save)
 
 
-class SectionModelTestCase(TestCase):
+class SectionTestCase(TestCase):
     def setUp(self):
         self.section_name = 'Section'
         self.section_year_level = 1
@@ -110,7 +110,7 @@ class SectionModelTestCase(TestCase):
 
 
 
-class BatchModelTestCase(TestCase):
+class BatchTestCase(TestCase):
     def setUp(self):
         self.batch_year = 2015
         self.batch = Batch(year=self.batch_year)
@@ -135,7 +135,7 @@ class BatchModelTestCase(TestCase):
         self.assertRaises(IntegrityError, Batch(year=2018).save)
 
 
-class SubjectModelTestCase(TestCase):
+class SubjectTestCase(TestCase):
     def setUp(self):
         self.subject_name = 'Subject'
         self.year_level = 1
@@ -189,3 +189,4 @@ class PossibleTeacherPositionTestCase(TestCase):
         PossibleTeacherPosition(name='Position').save()
         self.assertRaises(IntegrityError,
                           PossibleTeacherPosition(name='Position').save)
+
