@@ -38,3 +38,29 @@ class CreateStudentMonthlyRequiredDaysView(generics.ListCreateAPIView):
 class StudentMonthlyRequiredDaysView(generics.RetrieveUpdateDestroyAPIView):
     queryset = StudentMonthlyRequiredDays.objects.all()
     serializer_class = StudentMonthlyRequiredDaysSerializer
+
+
+class CreateSectionView(generics.ListCreateAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class SectionView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer
+
+
+class CreateBatchView(generics.ListCreateAPIView):
+    queryset = Batch.objects.all()
+    serializer_class = BatchSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class BatchView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Batch.objects.all()
+    serializer_class = BatchSerializer

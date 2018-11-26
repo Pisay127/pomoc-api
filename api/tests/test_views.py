@@ -216,11 +216,187 @@ class StudentMonthlyRequiredDaysTestCase(TestCase):
 
 
 class SectionTestCase(TestCase):
-    pass
+    def setUp(self):
+        payload = {
+            'name': 'Section',
+            'year_level': 4
+        }
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_section'),
+                                         payload,
+                                         format='json')
+
+    def test_api_can_create_a_section(self):
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_cannot_create_invalid_section(self):
+        payload = {
+            'name': 'Section',
+            'year_level': 'Four'
+        }
+        response = self.client.post(reverse('create_section'),
+                                    payload,
+                                    format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_get_a_section(self):
+        section = Section.objects.get()
+        response = self.client.get(reverse('section',
+                                            kwargs={
+                                                'pk': section.id
+                                            }),
+                                   format='json')
+        serialized_object = SectionSerializer(section)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_section(self):
+        response = self.client.get(reverse('section',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_section(self):
+        payload = {
+            'name': 'Section',
+            'year_level': 1
+        }
+        section = Section.objects.get()
+        response = self.client.put(reverse('section',
+                                           kwargs={
+                                              'pk': section.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_cannot_invalidly_update_a_section(self):
+        payload = {
+            'name': 'Section',
+            'year_level': 'Four'
+        }
+        section = Section.objects.get()
+        response = self.client.put(reverse('section',
+                                           kwargs={
+                                               'pk': section.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_delete_section(self):
+        section = Section.objects.get()
+        response = self.client.delete(reverse('section',
+                                              kwargs={
+                                                  'pk': section.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_section(self):
+        response = self.client.delete(reverse('section',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class BatchTestCase(TestCase):
-    pass
+    def setUp(self):
+        payload = {
+            'year': 2015
+        }
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_batch'),
+                                         payload,
+                                         format='json')
+
+    def test_api_can_create_a_batch(self):
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_cannot_create_invalid_batch(self):
+        payload = {
+            'year': '2015'
+        }
+        response = self.client.post(reverse('create_batch'),
+                                    payload,
+                                    format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_get_a_batch(self):
+        batch = Batch.objects.get()
+        response = self.client.get(reverse('batch',
+                                            kwargs={
+                                                'pk': batch.id
+                                            }),
+                                   format='json')
+        serialized_object = BatchSerializer(batch)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_batch(self):
+        response = self.client.get(reverse('batch',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_batch(self):
+        payload = {
+            'year': 2016
+        }
+        batch = Batch.objects.get()
+        response = self.client.put(reverse('batch',
+                                           kwargs={
+                                              'pk': batch.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_cannot_invalidly_update_a_batch(self):
+        payload = {
+            'year': 'Twenty Fifteen'
+        }
+        batch = Batch.objects.get()
+        response = self.client.put(reverse('batch',
+                                           kwargs={
+                                               'pk': batch.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_delete_batch(self):
+        batch = Batch.objects.get()
+        response = self.client.delete(reverse('batch',
+                                              kwargs={
+                                                  'pk': batch.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_batch(self):
+        response = self.client.delete(reverse('batch',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class SubjectTestCase(TestCase):
