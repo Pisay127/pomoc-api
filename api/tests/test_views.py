@@ -116,7 +116,103 @@ class StudentCharacterRatingCriteriaTestCase(TestCase):
 
 
 class StudentMonthlyRequiredDaysTestCase(TestCase):
-    pass
+    def setUp(self):
+        payload = {
+            'month': 1,
+            'school_year': '2016-2017',
+            'num_days': 30
+        }
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_student_'
+                                                 + 'monthly_required_days'),
+                                         payload,
+                                         format='json')
+
+    def test_api_can_create_a_required_days_record(self):
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_cannot_create_invalid_required_days_record(self):
+        payload = {
+            'month': 'May',
+            'school_year': '2016-2017',
+            'num_days': 30
+        }
+        response = self.client.post(reverse('create_student_monthly_required_'
+                                            + 'days'),
+                                    payload,
+                                    format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_get_a_required_days_record(self):
+        record = StudentMonthlyRequiredDays.objects.get()
+        response = self.client.get(reverse('student_monthly_required_days',
+                                            kwargs={
+                                                'pk': record.id
+                                            }),
+                                   format='json')
+        serialized_object = StudentMonthlyRequiredDaysSerializer(record)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_required_days_record(self):
+        response = self.client.get(reverse('student_monthly_required_days',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_required_days_record(self):
+        payload = {
+            'month': 2,
+            'school_year': '2016-2017',
+            'num_days': 30
+        }
+        record = StudentMonthlyRequiredDays.objects.get()
+        response = self.client.put(reverse('student_monthly_required_days',
+                                           kwargs={
+                                              'pk': record.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_cannot_invalidly_update_a_required_days_record(self):
+        payload = {
+            'month': 'May',
+            'school_year': '2016-2017',
+            'num_days': 30
+        }
+        record = StudentMonthlyRequiredDays.objects.get()
+        response = self.client.put(reverse('student_monthly_required_days',
+                                           kwargs={
+                                               'pk': record.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_delete_required_days_record(self):
+        record = StudentMonthlyRequiredDays.objects.get()
+        response = self.client.delete(reverse('student_monthly_required_days',
+                                              kwargs={
+                                                  'pk': record.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_required_days_record(self):
+        response = self.client.delete(reverse('student_monthly_required_days',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class SectionTestCase(TestCase):
