@@ -221,6 +221,53 @@ class PossibleTeacherPosition(Base):
         return '<PossibleTeacherPosition {}'.format(self.name)
 
 
+class TeacherPosition(Base):
+    teacher_id = models.ForeignKey(Teacher,
+                                   on_delete=models.CASCADE)
+    position_id = models.ForeignKey(PossibleTeacherPosition,
+                                    on_delete=models.PROTECT)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+
+
+class SectionAdvisor(Base):
+    advisor_id = models.ForeignKey(Teacher,
+                                   on_delete=models.SET_NULL,
+                                   null=True)
+    section_id = models.ForeignKey(Section,
+                                   on_delete=models.CASCADE)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+
+
+class BatchAdvisor(Base):
+    advisor_id = models.ForeignKey(Teacher,
+                                   on_delete=models.SET_NULL,
+                                   null=True)
+    batch_year = models.ForeignKey(Batch,
+                                   on_delete=models.CASCADE)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+
+
+class SubjectOffering(Base):
+    subject_id = models.ForeignKey(Subject,
+                                   on_delete=models.CASCADE)
+    instructor_id = models.ForeignKey(Teacher,
+                                      on_delete=models.SET_NULL,
+                                      null=True,
+                                      blank=True)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+    schedule = models.TextField('Schedule',
+                                null=True,
+                                blank=True)
+
+
 class Admin(Base):
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE,

@@ -4,7 +4,7 @@ from api.models import *
 
 class BaseSerializer(serializers.ModelSerializer):
     class Meta:
-        read_only_fields = ('date_created', 'date_modified')
+        read_only_fields = ('id', 'date_created', 'date_modified',)
 
 
 class UserSerializer(BaseSerializer):
@@ -183,6 +183,34 @@ class PossibleTeacherPositionSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = PossibleTeacherPosition
         fields = ('id', 'name', 'date_created', 'date_modified',)
+
+
+class TeacherPositionSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = TeacherPosition
+        fields = ('id', 'teacher_id', 'position_id', 'school_year',)
+
+
+class SectionAdvisorSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = SectionAdvisor
+        fields = ('id', 'advisor_id', 'section_id', 'school_year',)
+
+
+class BatchAdvisorSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = BatchAdvisor
+        fields = ('id', 'advisor_id', 'batch_year', 'school_year',)
+
+
+class SubjectOfferingSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = SubjectOffering
+        fields = ('id',
+                  'subject_id',
+                  'instructor_id',
+                  'school_year',
+                  'schedule',)
 
 
 class AdminSerializer(BaseSerializer):

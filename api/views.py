@@ -182,6 +182,58 @@ class PossibleTeacherPositionView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PossibleTeacherPositionSerializer
 
 
+class CreateTeacherPositionView(generics.ListCreateAPIView):
+    queryset = TeacherPosition.objects.all()
+    serializer_class = TeacherPositionSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class TeacherPositionView(generics.ListCreateAPIView):
+    queryset = TeacherPosition.objects.all()
+    serializer_class = TeacherPositionSerializer
+
+
+class CreateSectionAdvisorView(generics.ListCreateAPIView):
+    queryset = SectionAdvisor.objects.all()
+    serializer_class = SectionAdvisorSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class SectionAdvisorView(generics.ListCreateAPIView):
+    queryset = SectionAdvisor.objects.all()
+    serializer_class = SectionAdvisorSerializer
+
+
+class CreateBatchAdvisorView(generics.ListCreateAPIView):
+    queryset = BatchAdvisor.objects.all()
+    serializer_class = BatchAdvisorSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class BatchAdvisorView(generics.ListCreateAPIView):
+    queryset = BatchAdvisor.objects.all()
+    serializer_class = BatchAdvisorSerializer
+
+
+class CreateSubjectOfferingView(generics.ListCreateAPIView):
+    queryset = SubjectOffering.objects.all()
+    serializer_class = SubjectOfferingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class SubjectOfferingView(generics.ListCreateAPIView):
+    queryset = SubjectOffering.objects.all()
+    serializer_class = SubjectOfferingSerializer
+
+
 class CreateAdminView(generics.ListCreateAPIView):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
