@@ -190,7 +190,7 @@ class CreateTeacherPositionView(generics.ListCreateAPIView):
         serializer.save()
 
 
-class TeacherPositionView(generics.ListCreateAPIView):
+class TeacherPositionView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TeacherPosition.objects.all()
     serializer_class = TeacherPositionSerializer
 
@@ -203,7 +203,7 @@ class CreateSectionAdvisorView(generics.ListCreateAPIView):
         serializer.save()
 
 
-class SectionAdvisorView(generics.ListCreateAPIView):
+class SectionAdvisorView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SectionAdvisor.objects.all()
     serializer_class = SectionAdvisorSerializer
 
@@ -216,7 +216,7 @@ class CreateBatchAdvisorView(generics.ListCreateAPIView):
         serializer.save()
 
 
-class BatchAdvisorView(generics.ListCreateAPIView):
+class BatchAdvisorView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BatchAdvisor.objects.all()
     serializer_class = BatchAdvisorSerializer
 
@@ -229,9 +229,48 @@ class CreateSubjectOfferingView(generics.ListCreateAPIView):
         serializer.save()
 
 
-class SubjectOfferingView(generics.ListCreateAPIView):
+class SubjectOfferingView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubjectOffering.objects.all()
     serializer_class = SubjectOfferingSerializer
+
+
+class CreateStudentSubjectView(generics.ListCreateAPIView):
+    queryset = StudentSubject.objects.all()
+    serializer_class = StudentSubjectSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentSubjectView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentSubject.objects.all()
+    serializer_class = StudentSubjectSerializer
+
+
+class CreateStudentSubjectGradeView(generics.ListCreateAPIView):
+    queryset = StudentSubjectGrade.objects.all()
+    serializer_class = StudentSubjectGradeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentSubjectGradeView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentSubjectGrade.objects.all()
+    serializer_class = StudentSubjectGradeSerializer
+
+
+class CreateStudentSubjectPendingGradeView(generics.ListCreateAPIView):
+    queryset = StudentSubjectPendingGrade.objects.all()
+    serializer_class = StudentSubjectPendingGradeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentSubjectPendingGradeView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentSubjectPendingGrade.objects.all()
+    serializer_class = StudentSubjectPendingGradeSerializer
 
 
 class CreateAdminView(generics.ListCreateAPIView):

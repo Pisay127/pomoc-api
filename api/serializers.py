@@ -188,29 +188,50 @@ class PossibleTeacherPositionSerializer(BaseSerializer):
 class TeacherPositionSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = TeacherPosition
-        fields = ('id', 'teacher_id', 'position_id', 'school_year',)
+        fields = ('id', 'teacher', 'position', 'school_year',)
 
 
 class SectionAdvisorSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = SectionAdvisor
-        fields = ('id', 'advisor_id', 'section_id', 'school_year',)
+        fields = ('id', 'advisor', 'section', 'school_year',)
 
 
 class BatchAdvisorSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = BatchAdvisor
-        fields = ('id', 'advisor_id', 'batch_year', 'school_year',)
+        fields = ('id', 'advisor', 'batch_year', 'school_year',)
 
 
 class SubjectOfferingSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = SubjectOffering
         fields = ('id',
-                  'subject_id',
-                  'instructor_id',
+                  'subject',
+                  'teacher',
                   'school_year',
                   'schedule',)
+
+
+class StudentSubjectSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentSubject
+        fields = ('id', 'subject_offering', 'student',)
+
+
+class StudentSubjectGradeSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentSubjectGrade
+        fields = ('id', 'student_subject', 'quarter', 'grade',)
+
+
+class StudentSubjectPendingGradeSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentSubjectPendingGrade
+        fields = ('id',
+                  'student_subject_grade',
+                  'requesting_teacher',
+                  'proposed_grade',)
 
 
 class AdminSerializer(BaseSerializer):

@@ -1,4 +1,7 @@
 from datetime import date
+from decimal import Decimal
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from api.helpers import RandomFileName
@@ -222,30 +225,30 @@ class PossibleTeacherPosition(Base):
 
 
 class TeacherPosition(Base):
-    teacher_id = models.ForeignKey(Teacher,
-                                   on_delete=models.CASCADE)
-    position_id = models.ForeignKey(PossibleTeacherPosition,
-                                    on_delete=models.PROTECT)
+    teacher = models.ForeignKey(Teacher,
+                                on_delete=models.CASCADE)
+    position = models.ForeignKey(PossibleTeacherPosition,
+                                 on_delete=models.PROTECT)
     school_year = models.TextField('School Year',
                                    null=False,
                                    blank=False)
 
 
 class SectionAdvisor(Base):
-    advisor_id = models.ForeignKey(Teacher,
-                                   on_delete=models.SET_NULL,
-                                   null=True)
-    section_id = models.ForeignKey(Section,
-                                   on_delete=models.CASCADE)
+    advisor = models.ForeignKey(Teacher,
+                                on_delete=models.SET_NULL,
+                                null=True)
+    section = models.ForeignKey(Section,
+                                on_delete=models.CASCADE)
     school_year = models.TextField('School Year',
                                    null=False,
                                    blank=False)
 
 
 class BatchAdvisor(Base):
-    advisor_id = models.ForeignKey(Teacher,
-                                   on_delete=models.SET_NULL,
-                                   null=True)
+    advisor = models.ForeignKey(Teacher,
+                                on_delete=models.SET_NULL,
+                                null=True)
     batch_year = models.ForeignKey(Batch,
                                    on_delete=models.CASCADE)
     school_year = models.TextField('School Year',
@@ -254,18 +257,80 @@ class BatchAdvisor(Base):
 
 
 class SubjectOffering(Base):
-    subject_id = models.ForeignKey(Subject,
-                                   on_delete=models.CASCADE)
-    instructor_id = models.ForeignKey(Teacher,
-                                      on_delete=models.SET_NULL,
-                                      null=True,
-                                      blank=True)
+    subject = models.ForeignKey(Subject,
+                                on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher,
+                                on_delete=models.SET_NULL,
+                                null=True,
+                                blank=True)
     school_year = models.TextField('School Year',
                                    null=False,
                                    blank=False)
     schedule = models.TextField('Schedule',
                                 null=True,
                                 blank=True)
+
+
+class StudentSubject(Base):
+    subject_offering = models.ForeignKey(SubjectOffering,
+                                         on_delete=models.CASCADE)
+    student = models.ForeignKey(Student,
+                                on_delete=models.CASCADE)
+
+
+class StudentSubjectGrade(Base):
+    student_subject = models.ForeignKey(StudentSubject,
+                                        on_delete=models.CASCADE)
+    quarter = models.PositiveSmallIntegerField('Quarter',
+                                               null=False,
+                                               blank=False)
+    grade = models.DecimalField('Grade',
+                                validators=[
+                                    MinValueValidator(Decimal('1.0')),
+                                    MaxValueValidator(Decimal('5.0')),
+                                ],
+                                decimal_places=16,  # Arbitrary. We're just
+                                                    # making sure we capture
+                                                    # most, if not all, of the
+                                                    # results obtained from
+                                                    # operating on decimals. 16
+                                                    # seems to be a nice 
+                                                    # number.
+                                max_digits=17,
+                                null=False,
+                                blank=False)
+
+
+class StudentSubjectPendingGrade(Base):
+    student_subject_grade = models.ForeignKey(StudentSubjectGrade,
+                                              on_delete=models.CASCADE)
+    requesting_teacher = models.ForeignKey(Teacher,
+                                           on_delete=models.SET_NULL,
+                                           null=True)  # Cause a pending
+                                                       # grade still needs
+                                                       # to be checked and
+                                                       # still carries 
+                                                       # weight, even
+                                                       # if the teacher no
+                                                       # longer be in the
+                                                       # school and had her
+                                                       # account deleted.
+    proposed_grade = models.DecimalField('Proposed Grade',
+                                         decimal_places=16,  # Arbitrary. 
+                                                             # We're just
+                                                             # making sure we
+                                                             # capture most,
+                                                             # if not all, of 
+                                                             # the results
+                                                             # obtained from
+                                                             # operating on 
+                                                             # decimals. 16
+                                                             # seems to be a
+                                                             # nice magic
+                                                             # number.
+                                         max_digits=17,
+                                         null=False,
+                                         blank=False)
 
 
 class Admin(Base):
