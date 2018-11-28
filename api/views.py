@@ -26,6 +26,19 @@ class StudentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StudentSerializer
 
 
+class CreateStudentStatusView(generics.ListCreateAPIView):
+    queryset = StudentStatus.objects.all()
+    serializer_class = StudentStatusSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentStatusView(generics.ListCreateAPIView):
+    queryset = StudentStatus.objects.all()
+    serializer_class = StudentStatusSerializer
+
+
 class CreateStudentCharacterRatingCriteriaView(generics.ListCreateAPIView):
     queryset = StudentCharacterRatingCriteria.objects.all()
     serializer_class = StudentCharacterRatingCriteriaSerializer

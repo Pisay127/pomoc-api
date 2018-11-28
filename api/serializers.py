@@ -31,15 +31,45 @@ class StudentSerializer(BaseSerializer):
 
     class Meta:
         model = Student
-        fields = ('year_level', 'user',)
+        fields = ('user', 'statuses', 'year_level',)
 
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        student = Student.objects.create(**validated_data)
-        User.objects.create(**user_data, user_type='student')
+        user = User.objects.create(**user_data, user_type='student')
+        student = Student.objects.create(**validated_data, user=user)
 
         return student
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        user = instance.user
+
+        instance.year_level = validated_data.get('year_level',
+                                                 instance.year_level)
+        instance.save()
+
+        user.username = validated_data.get('username', user.username)
+        user.first_name = validated_data.get('username', user.first_name)
+        user.middle_name = validated_data.get('username', user.middle_name)
+        user.last_name = validated_data.get('username', user.last_name)
+        user.birth_date = validated_data.get('birth_date', user.birth_date)
+        user.email = validated_data.get('email', user.email)
+        user.avatar = validated_data.get('avatar', user.avatar)
+        user.save()
+
+        return instance
+
+
+class StudentStatusSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentStatus
+        fields = ('id',
+                  'student_id',
+                  'status',
+                  'quarter',
+                  'year_level',
+                  'school_year',)
 
 
 class StudentCharacterRatingCriteriaSerializer(BaseSerializer):
@@ -88,10 +118,25 @@ class TeacherSerializer(BaseSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        teacher = Teacher.objects.create(**validated_data)
-        User.objects.create(**user_data, user_type='teacher')
+        user = User.objects.create(**user_data, user_type='teacher')
+        teacher = Teacher.objects.create(**validated_data, user=user)
 
         return teacher
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        user = instance.user
+
+        user.username = validated_data.get('username', user.username)
+        user.first_name = validated_data.get('username', user.first_name)
+        user.middle_name = validated_data.get('username', user.middle_name)
+        user.last_name = validated_data.get('username', user.last_name)
+        user.birth_date = validated_data.get('birth_date', user.birth_date)
+        user.email = validated_data.get('email', user.email)
+        user.avatar = validated_data.get('avatar', user.avatar)
+        user.save()
+
+        return instance
 
 
 class PossibleTeacherPositionSerializer(BaseSerializer):
@@ -111,7 +156,22 @@ class AdminSerializer(BaseSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        admin = Admin.objects.create(**validated_data)
-        User.objects.create(**user_data, user_type='admin')
+        user = User.objects.create(**user_data, user_type='admin')
+        admin = Admin.objects.create(**validated_data, user=user)
 
         return admin
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        user = instance.user
+
+        user.username = validated_data.get('username', user.username)
+        user.first_name = validated_data.get('username', user.first_name)
+        user.middle_name = validated_data.get('username', user.middle_name)
+        user.last_name = validated_data.get('username', user.last_name)
+        user.birth_date = validated_data.get('birth_date', user.birth_date)
+        user.email = validated_data.get('email', user.email)
+        user.avatar = validated_data.get('avatar', user.avatar)
+        user.save()
+
+        return instance

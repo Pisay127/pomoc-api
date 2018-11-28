@@ -47,7 +47,7 @@ class User(Base, AbstractUser):
         today = date.today()
         today_monthday = (today.month, today.day)
         birth_date_monthday = (self.birth_date.month, self.birth_date.day)
-        tentative_age = today.year - birth_date.year
+        tentative_age = today.year - self.birth_date.year
         is_today_behind_birth_date = today_monthday < birth_date_monthday
 
         return tentative_age - int(is_today_behind_birth_date)
@@ -60,6 +60,23 @@ class Student(Base):
     year_level = models.PositiveSmallIntegerField('Year Level',
                                                   null=True,
                                                   blank=False)
+
+
+class StudentStatus(Base):
+    student_id = models.ForeignKey(Student,
+                                   on_delete=models.CASCADE)
+    status = models.TextField('Status',
+                              null=False,
+                              blank=False)
+    quarter = models.PositiveSmallIntegerField('Quarter',
+                                               null=False,
+                                               blank=False)
+    year_level = models.PositiveSmallIntegerField('Year Level',
+                                                  null=False,
+                                                  blank=False)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
 
 
 class StudentCharacterRatingCriteria(Base):
