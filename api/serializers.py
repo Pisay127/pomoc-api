@@ -31,7 +31,7 @@ class StudentSerializer(BaseSerializer):
 
     class Meta:
         model = Student
-        fields = ('user', 'statuses', 'year_level',)
+        fields = ('user', 'year_level',)
 
 
     def create(self, validated_data):
@@ -70,6 +70,46 @@ class StudentStatusSerializer(BaseSerializer):
                   'quarter',
                   'year_level',
                   'school_year',)
+
+
+class StudentMonthlyAttendanceSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentMonthlyAttendance
+        fields = ('id',
+                  'student_id',
+                  'monthly_required_days_id',
+                  'quarter',
+                  'year_level',
+                  'days_present',
+                  'days_tardy',
+                  'days_absent',)
+
+
+class StudentSectionSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentSection
+        fields = ('id',
+                  'student_id',
+                  'section_id',
+                  'school_year',)
+
+
+class StudentRatingSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentRating
+        fields = ('id',
+                  'student_id',
+                  'criterion_id',
+                  'rating',
+                  'quarter',
+                  'year_level',
+                  'school_year',)
+
+
+class StudentBatchSerializer(BaseSerializer):
+    class Meta(BaseSerializer.Meta):
+        model = StudentBatch
+        fields = ('id', 'student_id', 'batch_id',)
 
 
 class StudentCharacterRatingCriteriaSerializer(BaseSerializer):

@@ -52,6 +52,58 @@ class StudentCharacterRatingCriteriaView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StudentCharacterRatingCriteriaSerializer
 
 
+class CreateStudentMonthlyAttendanceView(generics.ListCreateAPIView):
+    queryset = StudentMonthlyAttendance.objects.all()
+    serializer_class = StudentMonthlyAttendanceSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentMonthlyAttendanceView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentMonthlyAttendance.objects.all()
+    serializer_class = StudentMonthlyAttendanceSerializer
+
+
+class CreateStudentSectionView(generics.ListCreateAPIView):
+    queryset = StudentSection.objects.all()
+    serializer_class = StudentSectionSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentSectionView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentSection.objects.all()
+    serializer_class = StudentSectionSerializer
+
+
+class CreateStudentRatingView(generics.ListCreateAPIView):
+    queryset = StudentRating.objects.all()
+    serializer_class = StudentRatingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentRatingView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentRating.objects.all()
+    serializer_class = StudentRatingSerializer
+
+
+class CreateStudentBatchView(generics.ListCreateAPIView):
+    queryset = StudentBatch.objects.all()
+    serializer_class = StudentBatchSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class StudentBatchView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentBatch.objects.all()
+    serializer_class = StudentBatchSerializer
+
+
 class CreateStudentMonthlyRequiredDaysView(generics.ListCreateAPIView):
     queryset = StudentMonthlyRequiredDays.objects.all()
     serializer_class = StudentMonthlyRequiredDaysSerializer

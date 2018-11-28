@@ -79,16 +79,6 @@ class StudentStatus(Base):
                                    blank=False)
 
 
-class StudentCharacterRatingCriteria(Base):
-    name = models.TextField('Name',
-                            null=False,
-                            blank=False,
-                            unique=True)
-
-    def __str__(self):
-        return '<StudentCharacterRatingCriteria {}>'.format(self.name)
-
-
 class StudentMonthlyRequiredDays(Base):
     # TODO: Change school_year to start_year and end_year.
     month = models.PositiveSmallIntegerField('Month',
@@ -110,6 +100,28 @@ class StudentMonthlyRequiredDays(Base):
         unique_together = (('month', 'school_year'),)
 
 
+class StudentMonthlyAttendance(Base):
+    student_id = models.ForeignKey(Student,
+                                   on_delete=models.CASCADE)
+    monthly_required_days_id = models.ForeignKey(StudentMonthlyRequiredDays,
+                                                 on_delete=models.PROTECT)
+    quarter = models.PositiveSmallIntegerField('Quarter',
+                                               null=False,
+                                               blank=False)
+    year_level = models.PositiveSmallIntegerField('Year Level',
+                                                  null=False,
+                                                  blank=False)
+    days_present = models.PositiveSmallIntegerField('Days Present',
+                                                    null=False,
+                                                    blank=False)
+    days_tardy = models.PositiveSmallIntegerField('Days Tardy',
+                                                  null=False,
+                                                  blank=False)
+    days_absent = models.PositiveSmallIntegerField('Days Absent',
+                                                   null=False,
+                                                   blank=False)
+
+
 class Section(Base):
     name = models.TextField('Name',
                             null=False,
@@ -123,6 +135,46 @@ class Section(Base):
         return '<Section {} - {}>'.format(self.name, self.year_level)
 
 
+class StudentSection(Base):
+    student_id = models.ForeignKey(Student,
+                                   on_delete=models.CASCADE)
+    section_id = models.ForeignKey(Section,
+                                   on_delete=models.PROTECT)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+
+
+class StudentCharacterRatingCriteria(Base):
+    name = models.TextField('Name',
+                            null=False,
+                            blank=False,
+                            unique=True)
+
+    def __str__(self):
+        return '<StudentCharacterRatingCriteria {}>'.format(self.name)
+
+
+class StudentRating(Base):
+    student_id = models.ForeignKey(Student,
+                                   on_delete=models.CASCADE)
+    criterion_id = models.ForeignKey(StudentCharacterRatingCriteria,
+                                     on_delete=models.PROTECT)
+    rating = models.CharField('Rating',
+                              max_length=1,
+                              null=False,
+                              blank=False)
+    quarter = models.PositiveSmallIntegerField('Quarter',
+                                               null=False,
+                                               blank=False)
+    year_level = models.PositiveSmallIntegerField('Year Level',
+                                                  null=False,
+                                                  blank=False)
+    school_year = models.TextField('School Year',
+                                   null=False,
+                                   blank=False)
+
+
 class Batch(Base):
     year = models.PositiveSmallIntegerField('Year',
                                             null=False,
@@ -131,6 +183,13 @@ class Batch(Base):
 
     def __str__(self):
         return '<Batch {}>'.format(self.year)
+
+
+class StudentBatch(Base):
+    student_id = models.ForeignKey(Student,
+                                   on_delete=models.CASCADE)
+    batch_id = models.ForeignKey(Batch,
+                                 on_delete=models.PROTECT)
 
 
 class Subject(Base):
