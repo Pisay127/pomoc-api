@@ -400,8 +400,162 @@ class BatchTestCase(TestCase):
 
 
 class SubjectTestCase(TestCase):
-    pass
+    def setUp(self):
+        payload = {
+            'name': 'Subject',
+            'year_level': 1
+        }
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_subject'),
+                                         payload,
+                                         format='json')
+
+    def test_api_can_create_a_subject(self):
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_cannot_create_invalid_subject(self):
+        payload = {
+            'name': 'Subject',
+            'year_level': 'One'
+        }
+        response = self.client.post(reverse('create_subject'),
+                                    payload,
+                                    format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_get_a_subject(self):
+        subject = Subject.objects.get()
+        response = self.client.get(reverse('subject',
+                                            kwargs={
+                                                'pk': subject.id
+                                            }),
+                                   format='json')
+        serialized_object = SubjectSerializer(subject)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_subject(self):
+        response = self.client.get(reverse('subject',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_subject(self):
+        payload = {
+            'name': 'Subject',
+            'year_level': 2
+        }
+        subject = Subject.objects.get()
+        response = self.client.put(reverse('subject',
+                                           kwargs={
+                                              'pk': subject.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_cannot_invalidly_update_a_subject(self):
+        payload = {
+            'name': 'Subject',
+            'year_level': 'Two'
+        }
+        subject = Subject.objects.get()
+        response = self.client.put(reverse('subject',
+                                           kwargs={
+                                               'pk': subject.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_api_can_delete_subject(self):
+        subject = Subject.objects.get()
+        response = self.client.delete(reverse('subject',
+                                              kwargs={
+                                                  'pk': subject.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_subject(self):
+        response = self.client.delete(reverse('subject',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class PossibleTeacherPositionTestCase(TestCase):
-    pass
+    def setUp(self):
+        payload = {
+            'name': 'Position'
+        }
+        self.client = APIClient()
+        self.response = self.client.post(reverse('create_possible_teacher_'
+                                                 + 'position'),
+                                         payload,
+                                         format='json')
+
+    def test_api_can_create_a_possible_teacher_position(self):
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_can_get_a_possible_teacher_position(self):
+        position = PossibleTeacherPosition.objects.get()
+        response = self.client.get(reverse('possible_teacher_position',
+                                            kwargs={
+                                                'pk': position.id
+                                            }),
+                                   format='json')
+        serialized_object = PossibleTeacherPositionSerializer(position)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serialized_object.data)
+
+    def test_api_cannot_get_invalid_possible_teacher_positiont(self):
+        response = self.client.get(reverse('possible_teacher_position',
+                                            kwargs={
+                                                # 0xFAE1BA10 = Fail Value :)
+                                                'pk': 0xFAE1BA10
+                                            }),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_api_can_update_a_possible_teacher_position(self):
+        payload = {
+            'name': 'Another Position',
+        }
+        position = PossibleTeacherPosition.objects.get()
+        response = self.client.put(reverse('possible_teacher_position',
+                                           kwargs={
+                                              'pk': position.id
+                                           }),
+                                   payload,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_api_can_delete_possible_teacher_position(self):
+        position = PossibleTeacherPosition.objects.get()
+        response = self.client.delete(reverse('possible_teacher_position',
+                                              kwargs={
+                                                  'pk': position.id
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_api_cannot_delete_invalid_possible_teacher_position(self):
+        response = self.client.delete(reverse('possible_teacher_position',
+                                              kwargs={
+                                                  # 0xFAE1BA10 = Fail Value :)
+                                                  'pk': 0xFAE1BA10
+                                              }),
+                                      format='json',
+                                      follow=True)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
